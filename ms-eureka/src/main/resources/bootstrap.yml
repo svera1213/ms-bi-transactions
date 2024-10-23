@@ -1,0 +1,6 @@
+spring:
+  cloud:
+    config:
+      failFast: true
+      retry:
+        maxAttempts: 20
