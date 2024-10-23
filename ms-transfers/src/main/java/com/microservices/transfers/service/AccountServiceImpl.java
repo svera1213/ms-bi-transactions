@@ -3,9 +3,11 @@ package com.microservices.transfers.service;
 import com.microservices.transfers.entities.Account;
 import com.microservices.transfers.persistance.AccountRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+@Service
 public class AccountServiceImpl implements IAccountService {
 
     @Autowired

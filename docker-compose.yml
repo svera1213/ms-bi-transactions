@@ -1,4 +1,9 @@
 version: "3.9"
+
+networks:
+  ms_network:
+    driver: bridge
+
 services:
   ms_config:
     container_name: ms_config
@@ -9,7 +14,9 @@ services:
     expose:
       - 8888
     networks:
-      - ms_network
+      ms_network:
+        aliases:
+          - microservice-config
   ms_eureka:
     container_name: ms_eureka
     image: ms_eureka:1.0.0
@@ -17,13 +24,15 @@ services:
     ports:
       - "8761:8761"
     networks:
-      - ms_network
+      ms_network:
+        aliases:
+          - microservice-eureka
     links:
       - ms_config
     depends_on:
       - ms_config
     environment:
-      - CONFIG_URI=http://172.19.0.2:8888
+      - CONFIG_URI=http://microservice-config:8888
   ms_user_db:
     container_name: ms_user_db
     image: postgres:12
@@ -35,27 +44,6 @@ services:
       POSTGRES_DB: users_db
     networks:
       - ms_network
-  ms_user:
-    container_name: ms_user
-    image: ms_user:1.0.0
-    build: ms-user/.
-    ports:
-      - "8090:8090"
-    networks:
-      - ms_network
-    links:
-      - ms_config
-      - ms_eureka
-    depends_on:
-      - ms_config
-      - ms_eureka
-      - ms_user_db
-    environment:
-      - CONFIG_URI=http://172.19.0.2:8888
-      - EUREKA_URI=http://172.19.0.3:8761
-      - DATABASE_URL=jdbc:postgresql://ms_user_db:5432/users_db
-      - DATABASE_USERNAME=postgres
-      - DATABASE_PASSWORD=postgres
   ms_transfers_db:
     container_name: ms_transfers_db
     image: postgres:12
@@ -70,6 +58,29 @@ services:
       POSTGRES_DB: transfers_db
     networks:
       - ms_network
+  ms_user:
+    container_name: ms_user
+    image: ms_user:1.0.0
+    build: ms-user/.
+    ports:
+      - "8090:8090"
+    networks:
+      ms_network:
+        aliases:
+          - microservice-users
+    links:
+      - ms_config
+      - ms_eureka
+    depends_on:
+      - ms_config
+      - ms_eureka
+      - ms_user_db
+    environment:
+      - CONFIG_URI=http://microservice-config:8888
+      - EUREKA_URI=http://microservice-eureka:8761
+      - DATABASE_URL=jdbc:postgresql://ms_user_db:5432/users_db
+      - DATABASE_USERNAME=postgres
+      - DATABASE_PASSWORD=postgres
   ms_transfers:
     container_name: ms_transfers
     image: ms_transfers:1.0.0
@@ -77,7 +88,9 @@ services:
     ports:
       - "8060:8060"
     networks:
-      - ms_network
+      ms_network:
+        aliases:
+          - microservice-accounts
     links:
       - ms_config
       - ms_eureka
@@ -87,11 +100,30 @@ services:
       - ms_eureka
       - ms_transfers_db
     environment:
-      - CONFIG_URI=http://172.19.0.2:8888
-      - EUREKA_URI=http://172.19.0.3:8761
+      - CONFIG_URI=http://microservice-config:8888
+      - EUREKA_URI=http://microservice-eureka:8761
       - DATABASE_URL=jdbc:postgresql://ms_transfers_db:5435/transfers_db
       - DATABASE_USERNAME=postgres
       - DATABASE_PASSWORD=postgres
-networks:
-  ms_network:
-    driver: bridge
+  ms_gateway:
+    container_name: ms_gateway
+    image: ms_gateway:1.0.0
+    build: ms-gateway/.
+    ports:
+      - "8080:8080"
+    networks:
+      - ms_network
+    links:
+      - ms_transfers
+      - ms_user
+      - ms_eureka
+    depends_on:
+      - ms_config
+      - ms_eureka
+      - ms_transfers
+      - ms_user
+    environment:
+      - CONFIG_URI=http://microservice-config:8888
+      - EUREKA_URI=http://microservice-eureka:8761
+      - USERS_URI=http://microservice-users:8090
+      - ACCOUNTS_URI=http://microservice-accounts:8060

@@ -1,0 +1,27 @@
+server:
+  port: 8080
+
+eureka:
+  instance:
+    hostname: localhost
+  client:
+    serviceUrl:
+      defaultZone: ${EUREKA_URI}/eureka
+
+spring:
+  application:
+    name: ms-gateway
+  cloud:
+    gateway:
+      discovery:
+        locator:
+          enabled: true
+      routes:
+        - id: users
+          uri: '${USERS_URI}'
+          predicates:
+            - Path=/api/users/**
+        - id: accounts
+          uri: '${ACCOUNTS_URI}'
+          predicates:
+            - Path=/api/accounts/**
