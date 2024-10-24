@@ -1,7 +1,7 @@
 package com.microservices.user.controller;
 
-import com.microservices.user.entities.User;
-import com.microservices.user.service.IUserService;
+import com.microservices.user.entities.Client;
+import com.microservices.user.service.IClientService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -9,15 +9,15 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/users")
-public class UserController {
+public class ClientController {
 
     @Autowired
-    private IUserService userService;
+    private IClientService userService;
 
     @PostMapping()
     @ResponseStatus(HttpStatus.CREATED)
-    public void saveUser(@RequestBody User user){
-        userService.save(user);
+    public void saveUser(@RequestBody Client client){
+        userService.save(client);
     }
 
     @GetMapping()
