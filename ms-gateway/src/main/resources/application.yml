@@ -1,5 +1,27 @@
 spring:
   application:
     name: ms-gateway
+  cloud:
+    gateway:
+      discovery:
+        locator:
+          enabled: true
+      routes:
+        - id: users
+          uri: '${USERS_URI}'
+          predicates:
+            - Path=/api/users/**
+          filters:
+            - AuthenticationFilter
+        - id: accounts
+          uri: '${ACCOUNTS_URI}'
+          predicates:
+            - Path=/api/accounts/**
+          filters:
+            - AuthenticationFilter
+        - id: identity
+          uri: '${AUTH_URI}'
+          predicates:
+            - Path=/auth/**
   config:
     import: optional:configserver:${CONFIG_URI}

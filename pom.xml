@@ -20,6 +20,7 @@
         <module>ms-config</module>
         <module>ms-user</module>
         <module>ms-transfers</module>
+        <module>ms-auth</module>
     </modules>
     <url/>
     <licenses>

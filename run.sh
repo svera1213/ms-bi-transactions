@@ -11,6 +11,9 @@ cd ..
 cd ms-transfers
 ./mvnw clean package -DskipTests
 cd ..
+cd ms-auth
+./mvnw clean package -DskipTests
+cd ..
 cd ms-gateway
 ./mvnw clean package -DskipTests
 cd ..
