@@ -24,9 +24,9 @@ public class Account {
     @Column(name = "user_national_id")
     private Long userNationalId;
 
-    private String type;
+    private String type = "SAVINGS";
     private Double balance = 0.0;
-    private String status;
+    private String status = "ACTIVE";
 
     @Column(name = "created_at", columnDefinition = "TIMESTAMP DEFAULT NOW()")
     @TimeZoneStorage(TimeZoneStorageType.COLUMN)

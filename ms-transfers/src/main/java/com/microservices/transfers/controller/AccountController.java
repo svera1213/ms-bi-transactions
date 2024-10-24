@@ -1,7 +1,10 @@
 package com.microservices.transfers.controller;
 
+import com.microservices.transfers.dto.DepositRequest;
+import com.microservices.transfers.dto.TransactionRequest;
 import com.microservices.transfers.entities.Account;
 import com.microservices.transfers.entities.Transaction;
+import com.microservices.transfers.service.BalanceService;
 import com.microservices.transfers.service.IAccountService;
 import com.microservices.transfers.service.ITransactionService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +22,9 @@ public class AccountController {
     @Autowired
     private ITransactionService transactionService;
 
+    @Autowired
+    private BalanceService balanceService;
+
     @PostMapping()
     @ResponseStatus(HttpStatus.CREATED)
     public void saveAccount(@RequestBody Account account) {
@@ -27,8 +33,15 @@ public class AccountController {
 
     @PostMapping("/transactions/send")
     @ResponseStatus(HttpStatus.CREATED)
-    public void sendTransaction(@RequestBody Transaction transaction) {
-        transactionService.save(transaction);
+    public void sendTransaction(@RequestBody TransactionRequest transactionRequest) {
+        balanceService.checkTransferAmount(transactionRequest);
+        balanceService.transferAmount(transactionRequest);
+    }
+
+    @PostMapping("/deposit")
+    @ResponseStatus(HttpStatus.CREATED)
+    public void deposit(@RequestBody DepositRequest depositRequest) {
+        balanceService.deposit(depositRequest);
     }
 
     @GetMapping()

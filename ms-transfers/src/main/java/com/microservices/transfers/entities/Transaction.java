@@ -1,5 +1,7 @@
 package com.microservices.transfers.entities;
 
+import com.microservices.transfers.dto.DepositRequest;
+import com.microservices.transfers.dto.TransactionRequest;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.TimeZoneColumn;
@@ -47,4 +49,34 @@ public class Transaction {
     @TimeZoneStorage(TimeZoneStorageType.COLUMN)
     @TimeZoneColumn(name = "created_at_offset")
     private OffsetDateTime createdAt;
+
+    public Transaction(
+            Account originAccount, Account destinationAccount,
+            TransactionRequest transactionRequest,
+            Double originBalance, Double destinationBalance
+    ) {
+        this.originAccount = originAccount;
+        this.destinationAccount = destinationAccount;
+        this.amount = transactionRequest.getAmount();
+        this.originBalance = originBalance;
+        this.originNewBalance = originAccount.getBalance();
+        this.destinationBalance = destinationBalance;
+        this.destinationNewBalance = destinationAccount.getBalance();
+        this.createdAt = OffsetDateTime.now();
+    }
+
+    public Transaction(
+            Account account,
+            DepositRequest depositRequest,
+            Double originBalance, Double destinationBalance
+    ) {
+        this.originAccount = account;
+        this.destinationAccount = account;
+        this.amount = depositRequest.getAmount();
+        this.originBalance = originBalance;
+        this.originNewBalance = account.getBalance();
+        this.destinationBalance = destinationBalance;
+        this.destinationNewBalance = account.getBalance();
+        this.createdAt = OffsetDateTime.now();
+    }
 }

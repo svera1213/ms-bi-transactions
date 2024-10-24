@@ -3,6 +3,9 @@ version: "3.9"
 networks:
   ms_network:
     driver: bridge
+    internal: true
+  transactions_net:
+    driver: bridge
 
 services:
   ms_config:
@@ -44,6 +47,7 @@ services:
       POSTGRES_DB: users_db
     networks:
       - ms_network
+      - transactions_net
   ms_transfers_db:
     container_name: ms_transfers_db
     image: postgres:12
@@ -58,6 +62,22 @@ services:
       POSTGRES_DB: transfers_db
     networks:
       - ms_network
+      - transactions_net
+  ms_auth_db:
+    container_name: ms_auth_db
+    image: postgres:12
+    expose:
+      - 5433
+    ports:
+      - "5433:5433"
+    command: -p 5433
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: auth_db
+    networks:
+      - ms_network
+      - transactions_net
   ms_user:
     container_name: ms_user
     image: ms_user:1.0.0
@@ -105,6 +125,31 @@ services:
       - DATABASE_URL=jdbc:postgresql://ms_transfers_db:5435/transfers_db
       - DATABASE_USERNAME=postgres
       - DATABASE_PASSWORD=postgres
+  ms_auth:
+    container_name: ms_auth
+    image: ms_auth:1.0.0
+    build: ms-auth/.
+    ports:
+      - "9898:9898"
+    networks:
+      ms_network:
+        aliases:
+          - microservice-auth
+    links:
+      - ms_config
+      - ms_eureka
+      - ms_user
+    depends_on:
+      - ms_config
+      - ms_eureka
+      - ms_user
+      - ms_auth_db
+    environment:
+      - CONFIG_URI=http://microservice-config:8888
+      - EUREKA_URI=http://microservice-eureka:8761
+      - DATABASE_URL=jdbc:postgresql://ms_auth_db:5433/auth_db
+      - DATABASE_USERNAME=postgres
+      - DATABASE_PASSWORD=postgres
   ms_gateway:
     container_name: ms_gateway
     image: ms_gateway:1.0.0
@@ -113,17 +158,21 @@ services:
       - "8080:8080"
     networks:
       - ms_network
+      - transactions_net
     links:
       - ms_transfers
       - ms_user
       - ms_eureka
+      - ms_auth
     depends_on:
       - ms_config
       - ms_eureka
       - ms_transfers
       - ms_user
+      - ms_auth
     environment:
       - CONFIG_URI=http://microservice-config:8888
       - EUREKA_URI=http://microservice-eureka:8761
       - USERS_URI=http://microservice-users:8090
       - ACCOUNTS_URI=http://microservice-accounts:8060
+      - AUTH_URI=http://microservice-auth:9898
