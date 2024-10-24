@@ -13,7 +13,7 @@ spring:
     password: ${DATABASE_PASSWORD}
   jpa:
     hibernate:
-      ddlAuto: create-drop
+      ddlAuto: update
     database: postgresql
     databasePlatform: org.hibernate.dialect.PostgreSQLDialect
 

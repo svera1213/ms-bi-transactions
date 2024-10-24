@@ -1,6 +1,9 @@
 package com.microservices.auth.controller;
 
+import com.microservices.auth.client.UserClient;
 import com.microservices.auth.dto.AuthRequest;
+import com.microservices.auth.dto.ClientRequest;
+import com.microservices.auth.dto.RegisterRequest;
 import com.microservices.auth.entities.UserCredential;
 import com.microservices.auth.service.IUserCredentialService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,10 +22,16 @@ public class AuthController {
     @Autowired
     private AuthenticationManager authenticationManager;
 
+    @Autowired
+    private UserClient userClient;
+
     @PostMapping("/register")
-    public String addNewUser(@RequestBody UserCredential userCredential) {
+    public String addNewUser(@RequestBody RegisterRequest registerRequest) {
+        UserCredential userCredential = new UserCredential(registerRequest);
         userCredentialService.save(userCredential);
-        return "User added";
+        ClientRequest clientRequest = new ClientRequest(registerRequest);
+        userClient.saveUser(clientRequest);
+        return userCredentialService.generateToken(registerRequest.getEmail());
     }
 
     @PostMapping("/token")
