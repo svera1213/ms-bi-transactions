@@ -3,3 +3,18 @@ spring:
     name: ms-transfers
   config:
     import: optional:configserver:${CONFIG_URI}
+  redis:
+    host: ${SPRING_REDIS_HOST}
+    port: ${SPRING_REDIS_PORT}
+    timeout: 10000ms
+    lettuce:
+      pool:
+        maxActive: 8
+        maxWait: -1ms
+        maxIdle: 8
+        minIdle: 8
+    cache:
+      type: redis
+      redis:
+        timeToLive: 30
+        cacheNullValues: false

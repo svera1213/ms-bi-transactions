@@ -9,7 +9,7 @@ Backend microservices for bank transfers (example)
 
 `sudo docker compose up -d ms_eureka`
 
-`sudo docker compose up -d ms_user_db ms_transfers_db ms_auth_db`
+`sudo docker compose up -d ms_user_db ms_transfers_db ms_auth_db cache`
 
 `sudo docker compose up -d ms_user ms_transfers`
 
@@ -20,8 +20,12 @@ Backend microservices for bank transfers (example)
 ### General
 `docker compose ps`
 
+`docker compose down`
+
 `docker compose logs -f ms_config`
 
 `docker inspect -f '{{range.NetworkSettings.Networks}}{{.IPAddress}}{{end}}' ms_config`
 
 `rm  ~/.docker/config.json `
+
+`docker exec -it ms-bi-transactions-cache-1 redis-cli`

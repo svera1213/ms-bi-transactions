@@ -2,13 +2,13 @@ package com.microservices.transfers.entities;
 
 import com.microservices.transfers.dto.DepositRequest;
 import com.microservices.transfers.dto.TransactionRequest;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 import lombok.*;
-import org.hibernate.annotations.TimeZoneColumn;
 import org.hibernate.annotations.TimeZoneStorage;
 import org.hibernate.annotations.TimeZoneStorageType;
 
-import java.time.OffsetDateTime;
+import java.time.LocalDateTime;
 
 @Entity
 @Getter
@@ -47,8 +47,8 @@ public class Transaction {
 
     @Column(name = "created_at", columnDefinition = "TIMESTAMP DEFAULT NOW()")
     @TimeZoneStorage(TimeZoneStorageType.COLUMN)
-    @TimeZoneColumn(name = "created_at_offset")
-    private OffsetDateTime createdAt;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
+    private LocalDateTime createdAt;
 
     public Transaction(
             Account originAccount, Account destinationAccount,
@@ -62,7 +62,7 @@ public class Transaction {
         this.originNewBalance = originAccount.getBalance();
         this.destinationBalance = destinationBalance;
         this.destinationNewBalance = destinationAccount.getBalance();
-        this.createdAt = OffsetDateTime.now();
+        this.createdAt = LocalDateTime.now();
     }
 
     public Transaction(
@@ -77,6 +77,6 @@ public class Transaction {
         this.originNewBalance = account.getBalance();
         this.destinationBalance = destinationBalance;
         this.destinationNewBalance = account.getBalance();
-        this.createdAt = OffsetDateTime.now();
+        this.createdAt = LocalDateTime.now();
     }
 }

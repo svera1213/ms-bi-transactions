@@ -3,6 +3,7 @@ package com.microservices.transfers.service;
 import com.microservices.transfers.entities.Account;
 import com.microservices.transfers.persistance.AccountRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -28,6 +29,7 @@ public class AccountServiceImpl implements IAccountService {
         accountRepository.save(account);
     }
 
+    @Cacheable(cacheNames = "accounts")
     @Override
     public List<Account> findAllByUserNationalId(Long userNationalId) {
         return (List<Account>) accountRepository.findAllByUserNationalId(userNationalId);

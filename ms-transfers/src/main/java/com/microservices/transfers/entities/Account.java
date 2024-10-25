@@ -1,12 +1,12 @@
 package com.microservices.transfers.entities;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 import lombok.*;
-import org.hibernate.annotations.TimeZoneColumn;
 import org.hibernate.annotations.TimeZoneStorage;
 import org.hibernate.annotations.TimeZoneStorageType;
 
-import java.time.OffsetDateTime;
+import java.time.LocalDateTime;
 
 @Entity
 @Getter
@@ -24,20 +24,21 @@ public class Account {
     @Column(name = "user_national_id")
     private Long userNationalId;
 
-    private String type = "SAVINGS";
+    @Column(name = "account_name")
+    private String accountName;
     private Double balance = 0.0;
     private String status = "ACTIVE";
 
     @Column(name = "created_at", columnDefinition = "TIMESTAMP DEFAULT NOW()")
     @TimeZoneStorage(TimeZoneStorageType.COLUMN)
-    @TimeZoneColumn(name = "created_at_offset")
-    private OffsetDateTime createdAt = OffsetDateTime.now();
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
+    private LocalDateTime createdAt = LocalDateTime.now();
 
     @Column(name = "updated_at", columnDefinition = "TIMESTAMP DEFAULT NOW()")
     @TimeZoneStorage(TimeZoneStorageType.COLUMN)
-    @TimeZoneColumn(name = "updated_at_offset")
-    private OffsetDateTime updatedAt = OffsetDateTime.now();
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
+    private LocalDateTime updatedAt = LocalDateTime.now();
 
-    @Column(name = "is_enabled", columnDefinition = "BOOLEAN DEFAULT true")
-    private Boolean isEnabled;
+    @Column(name = "is_enabled")
+    private Boolean isEnabled = true;
 }
