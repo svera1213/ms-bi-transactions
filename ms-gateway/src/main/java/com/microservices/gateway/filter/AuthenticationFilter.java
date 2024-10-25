@@ -1,6 +1,8 @@
 package com.microservices.gateway.filter;
 
 import com.microservices.gateway.util.JwtUtil;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.gateway.filter.GatewayFilter;
 import org.springframework.stereotype.Component;
@@ -9,6 +11,8 @@ import org.springframework.http.HttpHeaders;
 
 @Component
 public class AuthenticationFilter extends AbstractGatewayFilterFactory<AuthenticationFilter.Config> {
+
+    private static final Logger logger = LogManager.getLogger(AuthenticationFilter.class);
 
     @Autowired
     private RouteValidator validator;
@@ -25,7 +29,8 @@ public class AuthenticationFilter extends AbstractGatewayFilterFactory<Authentic
         return ((exchange, chain) -> {
             if (validator.isSecured.test(exchange.getRequest())) {
                 if (!exchange.getRequest().getHeaders().containsKey(HttpHeaders.AUTHORIZATION)) {
-                    throw new RuntimeException("missing authorization header");
+                    logger.error("Missing Auth!", new RuntimeException("Missing Authorization Header"));
+                    throw new RuntimeException("Missing Authorization Header");
                 }
                 String authHeader = exchange.getRequest().getHeaders().get(HttpHeaders.AUTHORIZATION).get(0);
                 if (authHeader != null && authHeader.startsWith("Bearer ")) {
@@ -34,8 +39,8 @@ public class AuthenticationFilter extends AbstractGatewayFilterFactory<Authentic
                 try {
                     jwtUtil.validateToken(authHeader);
                 } catch (Exception e) {
-                    System.out.println("invalid access...!");
-                    throw new RuntimeException("un authorized access to application");
+                    logger.error("Invalid Access!", new RuntimeException("Unauthorized Access To Application"));
+                    throw new RuntimeException("Unauthorized Access To Application");
                 }
             }
             return chain.filter(exchange);

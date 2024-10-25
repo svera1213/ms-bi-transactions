@@ -31,12 +31,12 @@ public class Account {
     @Column(name = "created_at", columnDefinition = "TIMESTAMP DEFAULT NOW()")
     @TimeZoneStorage(TimeZoneStorageType.COLUMN)
     @TimeZoneColumn(name = "created_at_offset")
-    private OffsetDateTime createdAt;
+    private OffsetDateTime createdAt = OffsetDateTime.now();
 
     @Column(name = "updated_at", columnDefinition = "TIMESTAMP DEFAULT NOW()")
     @TimeZoneStorage(TimeZoneStorageType.COLUMN)
     @TimeZoneColumn(name = "updated_at_offset")
-    private OffsetDateTime updatedAt;
+    private OffsetDateTime updatedAt = OffsetDateTime.now();
 
     @Column(name = "is_enabled", columnDefinition = "BOOLEAN DEFAULT true")
     private Boolean isEnabled;

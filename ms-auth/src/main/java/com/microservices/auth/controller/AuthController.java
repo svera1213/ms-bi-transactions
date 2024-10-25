@@ -6,6 +6,8 @@ import com.microservices.auth.dto.ClientRequest;
 import com.microservices.auth.dto.RegisterRequest;
 import com.microservices.auth.entities.UserCredential;
 import com.microservices.auth.service.IUserCredentialService;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -15,6 +17,8 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/auth")
 public class AuthController {
+
+    private static final Logger logger = LogManager.getLogger(AuthController.class);
 
     @Autowired
     private IUserCredentialService userCredentialService;
@@ -27,6 +31,7 @@ public class AuthController {
 
     @PostMapping("/register")
     public String addNewUser(@RequestBody RegisterRequest registerRequest) {
+        logger.info("----> USER CREDENTIAL CREATED!");
         UserCredential userCredential = new UserCredential(registerRequest);
         userCredentialService.save(userCredential);
         ClientRequest clientRequest = new ClientRequest(registerRequest);

@@ -17,9 +17,11 @@ Backend microservices for bank transfers (example)
 
 `sudo docker compose up ms_gateway`
 
-### Details
+### General
 `docker compose ps`
 
 `docker compose logs -f ms_config`
 
 `docker inspect -f '{{range.NetworkSettings.Networks}}{{.IPAddress}}{{end}}' ms_config`
+
+`rm  ~/.docker/config.json `

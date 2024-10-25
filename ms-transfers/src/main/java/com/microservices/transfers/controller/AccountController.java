@@ -7,6 +7,8 @@ import com.microservices.transfers.entities.Transaction;
 import com.microservices.transfers.service.BalanceService;
 import com.microservices.transfers.service.IAccountService;
 import com.microservices.transfers.service.ITransactionService;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,6 +17,8 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/accounts")
 public class AccountController {
+
+    private static final Logger logger = LogManager.getLogger(AccountController.class);
 
     @Autowired
     private IAccountService accountService;
@@ -28,6 +32,7 @@ public class AccountController {
     @PostMapping()
     @ResponseStatus(HttpStatus.CREATED)
     public void saveAccount(@RequestBody Account account) {
+        logger.info("----> ACCOUNT CREATED");
         accountService.save(account);
     }
 
@@ -54,7 +59,7 @@ public class AccountController {
         return ResponseEntity.ok(accountService.findById(id));
     }
 
-    @GetMapping("/NUI/{nationalId}")
+    @GetMapping("/NUI/{userNationalId}")
     public ResponseEntity<?> findByAllByUserNationalId(@PathVariable Long userNationalId){
         return ResponseEntity.ok(accountService.findAllByUserNationalId(userNationalId));
     }

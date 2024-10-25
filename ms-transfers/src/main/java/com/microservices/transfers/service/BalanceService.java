@@ -7,6 +7,8 @@ import com.microservices.transfers.entities.Transaction;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.OffsetDateTime;
+
 @Service
 public class BalanceService {
 
@@ -32,10 +34,12 @@ public class BalanceService {
         Account destinationAccount = accountService.findById(transactionRequest.getDestinationAccountId());
         Double currentBalance = destinationAccount.getBalance();
         destinationAccount.setBalance(currentBalance + transferAmount);
+        destinationAccount.setUpdatedAt(OffsetDateTime.now());
         accountService.save(destinationAccount);
         Account originAccount = accountService.findById(transactionRequest.getOriginAccountId());
         Double originCurrentBalance = originAccount.getBalance();
         originAccount.setBalance(originCurrentBalance - transferAmount);
+        originAccount.setUpdatedAt(OffsetDateTime.now());
         accountService.save(originAccount);
         Transaction transaction = new Transaction(
                 originAccount, destinationAccount, transactionRequest, originCurrentBalance, currentBalance
@@ -52,6 +56,7 @@ public class BalanceService {
         Account account = accountService.findById(depositRequest.getAccountId());
         Double balance = account.getBalance();
         account.setBalance(balance + amount);
+        account.setUpdatedAt(OffsetDateTime.now());
         Transaction transaction = new Transaction(
                 account, depositRequest, balance, balance
         );
