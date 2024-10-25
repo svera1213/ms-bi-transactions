@@ -1,0 +1,20 @@
+server:
+  port: 8060
+
+spring:
+  application:
+    name: ms-transfers
+    title: MsTransfers
+    version: 1.0.0
+  config:
+    import: optional:configserver:http://microservice-config:8888
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: ${DATABASE_URL}
+    username: ${DATABASE_USERNAME}
+    password: ${DATABASE_PASSWORD}
+  jpa:
+    hibernate:
+      ddlAuto: update
+    database: postgresql
+    databasePlatform: org.hibernate.dialect.PostgreSQLDialect

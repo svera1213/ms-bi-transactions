@@ -29,3 +29,5 @@ Backend microservices for bank transfers (example)
 `rm  ~/.docker/config.json `
 
 `docker exec -it ms-bi-transactions-cache-1 redis-cli`
+
+`flutter run -d chrome --web-browser-flag "--disable-web-security"`
