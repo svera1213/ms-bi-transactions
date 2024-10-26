@@ -5,8 +5,10 @@ Backend microservices for bank transfers (example)
 - Docker
 
 ### Architecture:
-
-
+- Spring boot
+- Docker
+- Postgres
+- Redis
 
 ### Run `rm  ~/.docker/config.json` before
 
@@ -30,6 +32,3 @@ Backend microservices for bank transfers (example)
 - Show logs from container `docker compose logs -f ms_config`
 - Show ip of container `docker inspect -f '{{range.NetworkSettings.Networks}}{{.IPAddress}}{{end}}' ms_config`
 - Enter redis terminal `docker exec -it ms-bi-transactions-cache-1 redis-cli`
-
-
-`flutter run -d chrome --web-browser-flag "--disable-web-security"`
