@@ -47,7 +47,7 @@ services:
       POSTGRES_DB: users_db
     networks:
       - ms_network
-      - transactions_net
+#      - transactions_net
   ms_transfers_db:
     container_name: ms_transfers_db
     image: postgres:12
@@ -62,7 +62,7 @@ services:
       POSTGRES_DB: transfers_db
     networks:
       - ms_network
-      - transactions_net
+#      - transactions_net
   ms_auth_db:
     container_name: ms_auth_db
     image: postgres:12
@@ -77,7 +77,7 @@ services:
       POSTGRES_DB: auth_db
     networks:
       - ms_network
-      - transactions_net
+#      - transactions_net
   cache:
     image: redis
     ports:
@@ -87,7 +87,7 @@ services:
       - REDIS_DISABLE_COMMANDS=FLUSHDB,FLUSHALL
     networks:
       - ms_network
-      - transactions_net
+#      - transactions_net
   ms_user:
     container_name: ms_user
     image: ms_user:1.0.0
